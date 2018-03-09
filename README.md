@@ -1,2 +1,2 @@
-# 06-ajax-and-jason-and-wrrc
+# 06-ajax-and-json-and-wrrc
 Lab 6
