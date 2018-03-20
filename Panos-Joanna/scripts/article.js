@@ -13,7 +13,7 @@ function Article (rawDataObj) {
 Article.all = [];
 
 // COMMENT: Why isn't this method written as an arrow function?
-// It uses a this on the third line to pull the publishedOn from the article and modify it to be how long ago it was published.
+// The function uses a contextual 'this' on the third line. Since The arrow functions do not create their own context. Instead, they refer to the parent context.
 Article.prototype.toHtml = function() {
   let template = Handlebars.compile($('#article-template').text());
 
@@ -21,7 +21,7 @@ Article.prototype.toHtml = function() {
 
   // COMMENT: What is going on in the line below? What do the question mark and colon represent? How have we seen this same logic represented previously?
   // Not sure? Check the docs!
-  // This is a ternary operator. It looks to see whether the article has a published on property or if it is still a draft. If it is a draft then publishStatus=false, if there is one then publishStatus=true. The question mark represents where the returns begin and the colon seperates the true response on the left and the false response on the right.
+  // This is a ternary operator. It looks to see whether the article has a published on property or if it is still a draft. If it has publishedOn the we print the info `published ${this.daysAgo} days ago`, if it doesn't  we treat it as a 'draft'. The question mark represents where the returns begin and the colon seperates the true response on the left and the false response on the right.
   this.publishStatus = this.publishedOn ? `published ${this.daysAgo} days ago` : '(draft)';
   this.body = marked(this.body);
 
@@ -44,12 +44,10 @@ Article.loadAll = articleData => {
 Article.fetchAll = () => {
   // REVIEW: What is this 'if' statement checking for? Where was the rawData set to local storage?
   if (localStorage.rawData) {
-    console.log('if');
     let articleData=JSON.parse(localStorage.getItem('rawData'));  
     Article.loadAll(articleData);
     articleView.initIndexPage();
   } else {
-    console.log('else');
     //It has to get the data from JSON, then set it to local storage so it slowly fills in the empty parts, going from JSON to localstorage to JS to DOM.
     $.getJSON('data/hackerIpsum.json').then(
       function(data){
