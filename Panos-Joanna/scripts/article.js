@@ -37,25 +37,25 @@ Article.prototype.toHtml = function() {
 Article.loadAll = articleData => {
   articleData.sort((a,b) => (new Date(b.publishedOn)) - (new Date(a.publishedOn)))
   articleData.forEach(articleObject => Article.all.push(new Article(articleObject)))
-  console.log(Article.all);
 }
 
 // REVIEW: This function will retrieve the data from either a local or remote source, and process it, then hand off control to the View.
 Article.fetchAll = () => {
   // REVIEW: What is this 'if' statement checking for? Where was the rawData set to local storage?
   if (localStorage.rawData) {
-    let articleData=JSON.parse(localStorage.getItem('rawData'));  
+    let articleData=JSON.parse(localStorage.getItem('rawData'));
     Article.loadAll(articleData);
     articleView.initIndexPage();
   } else {
     //It has to get the data from JSON, then set it to local storage so it slowly fills in the empty parts, going from JSON to localstorage to JS to DOM.
-    $.getJSON('data/hackerIpsum.json').then(
-      function(data){
-        localStorage.setItem('rawData',JSON.stringify(data));
-        Article.loadAll(data);
-        articleView.initIndexPage();},
-      function(err){
-        console.log(err);
-      });
+    $.getJSON('data/hackerIpsum.json')
+      .then(
+        function(data){
+          localStorage.setItem('rawData',JSON.stringify(data));
+          Article.loadAll(data);
+          articleView.initIndexPage();},
+        function(err){
+          console.error(err);
+        });
   }
 }
